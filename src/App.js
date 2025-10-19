@@ -1,23 +1,22 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import { docs } from './data/docs';
+import Sidebar from './components/Sidebar';
+import DocViewer from './components/DocViewer';
 
 function App() {
+  const [selected, setSelected] = useState("useState");
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="min-h-screen bg-gray-100">
+      {/* Fixed Sidebar */}
+      <div className="fixed top-0 left-0 h-full w-64 bg-white shadow-lg z-10">
+        <Sidebar topics={docs} onSelect={setSelected} />
+      </div>
+
+      {/* Main Content */}
+      <div className="ml-64 p-6">
+        <DocViewer doc={docs[selected]} />
+      </div>
     </div>
   );
 }
