@@ -1,7 +1,12 @@
-export default function App() {
+import Counter from './features/counter/Counter';
+
+function App() {
   return (
-    <h1 className="text-3xl font-bold underline">
-      Hello world!
-    </h1>
-  )
+    <div>
+      <h1>Redux Toolkit + React</h1>
+      <Counter />
+    </div>
+  );
 }
+
+export default App;
