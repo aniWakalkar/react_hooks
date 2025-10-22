@@ -149,11 +149,11 @@ useEffect(() => {
   useContext: {
     title: "useContext – Context Hook",
     definition: `
-  **useContext** lets you access the nearest value from a context created by **React.createContext** (from the 'react' package) and provided via a **Context.Provider**.
+  useContext lets you access the nearest value from a context created by React.createContext (from the 'react' package) and provided via a Context.Provider.
 
   ✅ It avoids "prop drilling" by making global data (like theme, auth, locale, etc.) directly accessible in deeply nested components.
 
-  ⚠️ **Default values:** When you create a context with \`createContext(defaultValue)\`, that \`defaultValue\` is used only if a component consuming the context is NOT wrapped in a matching Provider.
+  ⚠️ Default values: When you create a context with \`createContext(defaultValue)\`, that \`defaultValue\` is used only if a component consuming the context is NOT wrapped in a matching Provider.
     `,
     examples: [
       {
@@ -266,16 +266,16 @@ function MyForm() {
     usage: `
   ### When and Why to Use useRef:
 
-  - **Accessing DOM Elements:**  
+  - Accessing DOM Elements:  
     Use \`useRef\` to get a direct reference to a DOM node to perform imperative actions (e.g., focusing an input).
 
-  - **Storing Mutable Values Without Re-rendering:**  
+  - Storing Mutable Values Without Re-rendering:  
     Unlike state, updating a \`ref\` does not trigger re-rendering. Use it to keep track of mutable values that don’t affect UI directly, like timers or previous values.
 
-  - **Keeping Previous Values:**  
+  - Keeping Previous Values:  
     Useful for comparing previous and current values across renders, such as previous props or state.
 
-  - **Avoid Unnecessary Renders:**  
+  - Avoid Unnecessary Renders:  
     When you need to hold a value that changes but you don’t want the component to re-render every time it updates.
     `,
     examples: [

@@ -1,12 +1,20 @@
-import React from 'react';
+import React, {useEffect } from 'react';
 
 const DocViewer = ({ doc }) => {
+
+  useEffect(() => {
+    window.scrollTo(0, 0); 
+  }, [doc]);
+
+
   if (!doc)
     return (
       <div className="flex items-center justify-center h-full text-gray-600 text-lg p-10">
         Select a topic to view documentation.
       </div>
     );
+
+
 
   return (
     <div className="p-8">
@@ -21,17 +29,17 @@ const DocViewer = ({ doc }) => {
       </h3>
 
       <div className="space-y-4">
-        {doc.examples.map((example, index) => (
-          <div
-            key={index}
-            className="w-full bg-gray-900 text-green-200 p-4 rounded-lg overflow-x-auto shadow-inner"
-          >
-            <p className="mb-2 text-green-400 font-semibold">{example.label}</p>
-            <pre className="whitespace-pre-wrap">
-              <code>{example.code}</code>
-            </pre>
-          </div>
-        ))}
+      {doc.examples.map((example, index) => (
+        <div
+          key={index}
+          className="w-full bg-gray-900 text-green-200 p-4 rounded-lg overflow-x-auto shadow-inner text-sm sm:text-base md:text-lg"
+        >
+          <p className="mb-2 text-green-400 font-semibold">{example.label}</p>
+          <pre className="whitespace-pre-wrap">
+            <code>{example.code}</code>
+          </pre>
+        </div>
+      ))}
       </div>
     </div>
   );
