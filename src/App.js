@@ -1,14 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { docs } from "./data/docs";
+import { tracks } from "./data/catalog";
 import Sidebar from "./components/Sidebar";
 import DocViewer from "./components/DocViewer";
 import LanguageToggle from "./components/LanguageToggle";
+import TrackToggle from "./components/TrackToggle";
 import { getUi } from "./data/ui";
 
 const LANG_KEY = "react-docs-lang";
+const TRACK_KEY = "dev-docs-track";
 
 function App() {
-  const [selected, setSelected] = useState({ section: "interview", id: "whatIsReact" });
+  const [track, setTrack] = useState(() => {
+    const saved = localStorage.getItem(TRACK_KEY);
+    return saved === "python" || saved === "react" ? saved : "react";
+  });
+  const trackInfo = tracks[track];
+  const [selected, setSelected] = useState(trackInfo.defaultSelected);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [lang, setLang] = useState(() => {
     const saved = localStorage.getItem(LANG_KEY);
@@ -24,8 +31,17 @@ function App() {
     document.documentElement.lang = lang === "hi" ? "hi" : "en";
   }, [lang]);
 
+  const handleTrackChange = (nextTrack) => {
+    setTrack(nextTrack);
+    setSelected(tracks[nextTrack].defaultSelected);
+  };
+
+  useEffect(() => {
+    localStorage.setItem(TRACK_KEY, track);
+  }, [track]);
+
   const labels = getUi(lang);
-  const currentDoc = docs[selected.section]?.[selected.id];
+  const currentDoc = trackInfo.sections[selected.section]?.[selected.id];
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -42,6 +58,7 @@ function App() {
             </svg>
           </button>
         </div>
+        <TrackToggle track={track} onChange={handleTrackChange} lang={lang} variant="light" />
         <LanguageToggle lang={lang} onChange={setLang} variant="light" />
       </div>
 
@@ -61,10 +78,12 @@ function App() {
         `}
       >
         <Sidebar
-          sections={docs}
+          track={track}
+          trackInfo={trackInfo}
           selected={selected}
           lang={lang}
           onLangChange={setLang}
+          onTrackChange={handleTrackChange}
           onSelect={(next) => {
             setSelected(next);
             setSidebarOpen(false);

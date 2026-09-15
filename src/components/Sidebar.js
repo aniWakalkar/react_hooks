@@ -1,12 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import LanguageToggle from "./LanguageToggle";
+import TrackToggle from "./TrackToggle";
 import { getUi } from "../data/ui";
-
-const SECTION_ORDER = [
-  { id: "interview", labelKey: "interview" },
-  { id: "hooks", labelKey: "hooks" },
-  { id: "redux", labelKey: "redux" },
-];
 
 const SectionList = ({
   title,
@@ -71,9 +66,22 @@ const SectionList = ({
   );
 };
 
-const Sidebar = ({ sections, selected, onSelect, lang, onLangChange, isSidebar }) => {
+const Sidebar = ({
+  trackInfo,
+  selected,
+  onSelect,
+  lang,
+  onLangChange,
+  track,
+  onTrackChange,
+  isSidebar,
+}) => {
   const labels = getUi(lang);
-  const [openSection, setOpenSection] = useState("interview");
+  const [openSection, setOpenSection] = useState(trackInfo.defaultOpen);
+
+  useEffect(() => {
+    setOpenSection(trackInfo.defaultOpen);
+  }, [trackInfo]);
 
   const handleToggle = (sectionId) => {
     setOpenSection((current) => (current === sectionId ? null : sectionId));
@@ -87,14 +95,17 @@ const Sidebar = ({ sections, selected, onSelect, lang, onLangChange, isSidebar }
   return (
     <div className={`h-full overflow-y-auto bg-gray-900 text-white p-5 ${isSidebar ? "pt-20" : "pt-6"}`}>
       <h2 className="text-lg font-bold mb-4">{labels.appTitle}</h2>
+      <div className="mb-4">
+        <TrackToggle track={track} onChange={onTrackChange} lang={lang} />
+      </div>
       <div className="mb-6">
         <LanguageToggle lang={lang} onChange={onLangChange} />
       </div>
-      {SECTION_ORDER.map(({ id, labelKey }) => (
+      {trackInfo.sectionOrder.map(({ id, labelKey }) => (
         <SectionList
           key={id}
           title={labels[labelKey]}
-          items={sections[id]}
+          items={trackInfo.sections[id]}
           sectionId={id}
           selected={selected}
           lang={lang}
