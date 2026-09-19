@@ -1,33 +1,27 @@
 import React, { useState, useEffect } from "react";
-import { tracks } from "./data/catalog";
-import Sidebar from "./components/Sidebar";
-import DocViewer from "./components/DocViewer";
-import LanguageToggle from "./components/LanguageToggle";
-import TrackToggle from "./components/TrackToggle";
-import { getUi } from "./data/ui";
+import { tracks, TRACK_IDS, DEFAULT_TRACK, getSection, getDoc } from "./data/tracks";
+import { DEFAULT_LANG, isValidLang } from "./config/languages";
+import usePersistedState from "./hooks/usePersistedState";
+import Sidebar from "./components/layout/Sidebar";
+import MobileHeader from "./components/layout/MobileHeader";
+import TrackTabs from "./components/common/TrackTabs";
+import DocViewer from "./components/doc/DocViewer";
 
 const LANG_KEY = "react-docs-lang";
 const TRACK_KEY = "dev-docs-track";
 
 function App() {
-  const [track, setTrack] = useState(() => {
-    const saved = localStorage.getItem(TRACK_KEY);
-    return saved === "python" || saved === "react" ? saved : "react";
-  });
+  const [track, setTrack] = usePersistedState(TRACK_KEY, DEFAULT_TRACK, (v) => TRACK_IDS.includes(v));
+  const [lang, setLang] = usePersistedState(LANG_KEY, DEFAULT_LANG, isValidLang);
   const trackInfo = tracks[track];
   const [selected, setSelected] = useState(trackInfo.defaultSelected);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [lang, setLang] = useState(() => {
-    const saved = localStorage.getItem(LANG_KEY);
-    return saved === "hi" || saved === "both" || saved === "en" ? saved : "en";
-  });
 
   useEffect(() => {
     document.body.style.overflow = sidebarOpen ? "hidden" : "auto";
   }, [sidebarOpen]);
 
   useEffect(() => {
-    localStorage.setItem(LANG_KEY, lang);
     document.documentElement.lang = lang === "hi" ? "hi" : "en";
   }, [lang]);
 
@@ -36,31 +30,18 @@ function App() {
     setSelected(tracks[nextTrack].defaultSelected);
   };
 
-  useEffect(() => {
-    localStorage.setItem(TRACK_KEY, track);
-  }, [track]);
-
-  const labels = getUi(lang);
-  const currentDoc = trackInfo.sections[selected.section]?.[selected.id];
+  const currentDoc = getDoc(trackInfo, selected);
+  const bodyLabelKey = getSection(trackInfo, selected.section)?.bodyLabelKey;
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <div className="md:hidden p-3 bg-white shadow-md sticky top-0 z-30 space-y-2">
-        <div className="flex justify-between items-center">
-          <h1 className="text-lg font-bold">{labels.appTitle}</h1>
-          <button
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="text-gray-700 focus:outline-none"
-            aria-label="Toggle sidebar"
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button>
-        </div>
-        <TrackToggle track={track} onChange={handleTrackChange} lang={lang} variant="light" />
-        <LanguageToggle lang={lang} onChange={setLang} variant="light" />
-      </div>
+      <MobileHeader
+        track={track}
+        onTrackChange={handleTrackChange}
+        lang={lang}
+        onLangChange={setLang}
+        onMenuClick={() => setSidebarOpen(!sidebarOpen)}
+      />
 
       {sidebarOpen && (
         <div
@@ -78,12 +59,10 @@ function App() {
         `}
       >
         <Sidebar
-          track={track}
           trackInfo={trackInfo}
           selected={selected}
           lang={lang}
           onLangChange={setLang}
-          onTrackChange={handleTrackChange}
           onSelect={(next) => {
             setSelected(next);
             setSidebarOpen(false);
@@ -92,8 +71,12 @@ function App() {
         />
       </aside>
 
+      <div className="hidden md:block md:ml-72 sticky top-0 z-10 bg-gray-100 border-b border-gray-200 px-6 py-3">
+        <TrackTabs track={track} onChange={handleTrackChange} lang={lang} />
+      </div>
+
       <main className="md:ml-72 p-6 min-h-screen overflow-auto">
-        <DocViewer doc={currentDoc} lang={lang} kind={selected.section} />
+        <DocViewer doc={currentDoc} lang={lang} bodyLabelKey={bodyLabelKey} />
       </main>
     </div>
   );

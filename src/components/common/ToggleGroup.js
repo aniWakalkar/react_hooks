@@ -1,27 +1,19 @@
 import React from "react";
-import { getUi } from "../data/ui";
 
-const TRACKS = [
-  { id: "react", labelKey: "react" },
-  { id: "python", labelKey: "python" },
-];
-
-const TrackToggle = ({ track, onChange, lang, variant = "dark" }) => {
-  const labels = getUi(lang);
+// Generic segmented control. options: [{ id, label }]
+const ToggleGroup = ({ title, options, value, onChange, variant = "dark" }) => {
   const isLight = variant === "light";
 
   return (
     <div className="space-y-2">
-      <p className={`text-xs tracking-wide ${isLight ? "text-gray-500" : "text-gray-400"}`}>
-        {labels.track}
-      </p>
+      <p className={`text-xs tracking-wide ${isLight ? "text-gray-500" : "text-gray-400"}`}>{title}</p>
       <div
         className={`flex rounded-lg overflow-hidden border ${
           isLight ? "border-gray-300" : "border-gray-700"
         }`}
       >
-        {TRACKS.map((opt) => {
-          const active = track === opt.id;
+        {options.map((opt) => {
+          const active = value === opt.id;
           return (
             <button
               key={opt.id}
@@ -35,7 +27,7 @@ const TrackToggle = ({ track, onChange, lang, variant = "dark" }) => {
                     : "bg-gray-800 text-gray-300 hover:bg-gray-700"
               }`}
             >
-              {labels[opt.labelKey]}
+              {opt.label}
             </button>
           );
         })}
@@ -44,4 +36,4 @@ const TrackToggle = ({ track, onChange, lang, variant = "dark" }) => {
   );
 };
 
-export default TrackToggle;
+export default ToggleGroup;

@@ -1,6 +1,3 @@
-import { interview } from "./interview";
-import { redux } from "./redux";
-
 export const hooks = {
   useState: {
     title: {
@@ -636,10 +633,4 @@ function useFriendStatus(friendID) {
       },
     ],
   },
-};
-
-export const docs = {
-  interview,
-  hooks,
-  redux,
 };

@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
-import LanguageToggle from "./LanguageToggle";
-import TrackToggle from "./TrackToggle";
-import { getUi } from "../data/ui";
+import LanguageToggle from "../common/LanguageToggle";
+import { getUi } from "../../data/ui";
+import { pickText } from "../../utils/text";
 
 const SectionList = ({
-  title,
-  items,
+  section,
   sectionId,
   selected,
   lang,
@@ -13,8 +12,6 @@ const SectionList = ({
   isOpen,
   onToggle,
 }) => {
-  const isBoth = lang === "both";
-
   return (
     <div className="mb-3">
       <button
@@ -23,7 +20,7 @@ const SectionList = ({
         aria-expanded={isOpen}
         className="w-full flex items-center justify-between text-sm font-semibold border-b border-gray-700 pb-2 tracking-wide text-gray-300 hover:text-white"
       >
-        <span>{title}</span>
+        <span>{pickText(section.label, lang)}</span>
         <svg
           className={`w-4 h-4 shrink-0 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
           fill="none"
@@ -37,15 +34,10 @@ const SectionList = ({
 
       {isOpen && (
         <ul className="space-y-1 mt-2">
-          {Object.keys(items).map((key) => {
-            const item = items[key];
+          {Object.keys(section.items).map((key) => {
+            const item = section.items[key];
             const active = selected.section === sectionId && selected.id === key;
-            const label =
-              typeof item.title === "string"
-                ? item.title
-                : isBoth
-                  ? item.title.en
-                  : item.title[lang] || item.title.en;
+            const label = pickText(item.title, lang);
 
             return (
               <li key={key}>
@@ -72,8 +64,6 @@ const Sidebar = ({
   onSelect,
   lang,
   onLangChange,
-  track,
-  onTrackChange,
   isSidebar,
 }) => {
   const labels = getUi(lang);
@@ -95,23 +85,19 @@ const Sidebar = ({
   return (
     <div className={`h-full overflow-y-auto bg-gray-900 text-white p-5 ${isSidebar ? "pt-20" : "pt-6"}`}>
       <h2 className="text-lg font-bold mb-4">{labels.appTitle}</h2>
-      <div className="mb-4">
-        <TrackToggle track={track} onChange={onTrackChange} lang={lang} />
-      </div>
       <div className="mb-6">
         <LanguageToggle lang={lang} onChange={onLangChange} />
       </div>
-      {trackInfo.sectionOrder.map(({ id, labelKey }) => (
+      {trackInfo.sections.map((section) => (
         <SectionList
-          key={id}
-          title={labels[labelKey]}
-          items={trackInfo.sections[id]}
-          sectionId={id}
+          key={section.id}
+          section={section}
+          sectionId={section.id}
           selected={selected}
           lang={lang}
           onSelect={handleSelect}
-          isOpen={openSection === id}
-          onToggle={() => handleToggle(id)}
+          isOpen={openSection === section.id}
+          onToggle={() => handleToggle(section.id)}
         />
       ))}
     </div>
