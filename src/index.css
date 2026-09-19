@@ -25,6 +25,21 @@
   background-color: #6b7280;
 }
 
+/* Very faint, thin scrollbar for the subject tabs */
+.tabs-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #e5e7eb transparent;
+}
+
+.tabs-scrollbar::-webkit-scrollbar {
+  height: 2px;
+}
+
+.tabs-scrollbar::-webkit-scrollbar-thumb,
+.tabs-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #e5e7eb;
+}
+
 .bg-gray-900,
 .bg-gray-900 * {
   scrollbar-color: #4b5563 transparent;

@@ -4,7 +4,7 @@ import { pickText } from "../../utils/text";
 
 // Horizontally scrollable subject tabs. Scales to any number of subjects.
 const TrackTabs = ({ track, onChange, lang }) => (
-  <nav className="flex gap-2 overflow-x-auto whitespace-nowrap" aria-label="Subjects">
+  <nav className="flex gap-2 overflow-x-auto whitespace-nowrap pb-5 tabs-scrollbar" aria-label="Subjects">
     {TRACK_IDS.map((id) => {
       const active = id === track;
       return (
