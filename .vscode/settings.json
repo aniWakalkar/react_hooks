@@ -1,0 +1,14 @@
+{
+    "gitProfiles.profiles": {
+        "Normal": [
+            "git add .",
+            "git commit -m \"update\"",
+            "git push"
+        ],
+        "Migration": [
+            "git add .",
+            "git commit -m \"migration\"",
+            "git push origin migration"
+        ]
+    }
+}
